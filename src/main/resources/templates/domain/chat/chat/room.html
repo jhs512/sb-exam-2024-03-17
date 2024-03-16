@@ -1,5 +1,27 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+<style>
+    .chat-message {
+        display: flex;
+        gap: 10px;
+    }
+</style>
+
 <script th:inline="javascript">
     const chatRoomId = /*[[${chatRoom.id}]]*/ 0;
+
+    const socket = new SockJS('/ws');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function (frame) {
+        console.log('Connected: ' + frame);
+
+        stompClient.subscribe(`/topic/chat/${chatRoomId}/messageCreated`, function (data) {
+            const jsonData = JSON.parse(data.body);
+            drawChatMessage(jsonData);
+        });
+    });
 
     async function loadChatMessages() {
         try {
@@ -39,25 +61,46 @@
         const chatMessage = document.createElement('div');
         chatMessage.classList.add('chat-message');
 
+        const chatMessageId = document.createElement('div');
+        chatMessageId.classList.add('chat-message__id');
+        chatMessageId.innerText = message.id;
+
         const chatMessageWriterName = document.createElement('div');
-        chatMessageWriterName.classList.add('chat-message-writer-name');
+        chatMessageWriterName.classList.add('chat-message-writer__name');
         chatMessageWriterName.innerText = message.writerName;
 
         const chatMessageBody = document.createElement('div');
-        chatMessageBody.classList.add('chat-message-body');
+        chatMessageBody.classList.add('chat-message__body');
         chatMessageBody.innerText = message.body;
 
+        chatMessage.appendChild(chatMessageId);
         chatMessage.appendChild(chatMessageWriterName);
         chatMessage.appendChild(chatMessageBody);
 
-        chatMessages.appendChild(chatMessage);
-
+        chatMessages.insertBefore(chatMessage, chatMessages.firstChild);
     }
 
     document.addEventListener('DOMContentLoaded', function () {
         loadChatMessages();
     });
+
+    function submitSendForm(form) {
+        const writerName = form.writerName.value.trim();
+        const body = form.body.value.trim();
+
+        stompClient.send(
+            `/app/chat/${chatRoomId}/messages/create`,
+            {},
+            JSON.stringify({writerName, body})
+        );
+    }
 </script>
+
+<form onsubmit="submitSendForm(this); return false;">
+    <input type="text" name="writerName" placeholder="작성자">
+    <input type="text" name="body" placeholder="내용">
+    <button type="submit">Send</button>
+</form>
 
 <div id="chat-messages">
 

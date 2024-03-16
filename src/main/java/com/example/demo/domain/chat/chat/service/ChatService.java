@@ -33,7 +33,7 @@ public class ChatService {
     }
 
     @Transactional
-    public void writeMessage(ChatRoom room, String writerName, String body) {
+    public ChatMessage writeMessage(ChatRoom room, String writerName, String body) {
         ChatMessage chatMessage = ChatMessage
                 .builder()
                 .chatRoom(room)
@@ -41,7 +41,7 @@ public class ChatService {
                 .body(body)
                 .build();
 
-        chatMessageRepository.save(chatMessage);
+        return chatMessageRepository.save(chatMessage);
     }
 
     public List<ChatMessage> findMessagesByRoomId(long roomId) {

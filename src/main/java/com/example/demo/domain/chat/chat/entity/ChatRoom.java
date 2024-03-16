@@ -1,6 +1,6 @@
 package com.example.demo.domain.chat.chat.entity;
 
-import global.jpa.entity.BaseTime;
+import com.example.demo.global.initData.entity.BaseTime;
 import jakarta.persistence.Entity;
 import lombok.*;
 

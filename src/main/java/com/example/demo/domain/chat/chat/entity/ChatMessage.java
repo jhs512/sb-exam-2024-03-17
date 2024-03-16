@@ -1,7 +1,7 @@
 package com.example.demo.domain.chat.chat.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import global.jpa.entity.BaseTime;
+import com.example.demo.global.initData.entity.BaseTime;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.*;

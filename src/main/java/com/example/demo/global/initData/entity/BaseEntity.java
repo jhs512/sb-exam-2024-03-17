@@ -1,4 +1,4 @@
-package global.jpa.entity;
+package com.example.demo.global.initData.entity;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
