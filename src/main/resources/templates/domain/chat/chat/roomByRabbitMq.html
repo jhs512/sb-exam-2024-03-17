@@ -11,13 +11,8 @@
 <script th:inline="javascript">
     const chatRoomId = /*[[${chatRoom.id}]]*/ 0;
 
-    const socket = new SockJS('/ws/simpleBroker');
+    const socket = new SockJS('/ws/rabbitMq');
     const stompClient = Stomp.over(socket);
-
-
-    document.addEventListener('DOMContentLoaded', function () {
-        loadChatMessages();
-    });
 
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);

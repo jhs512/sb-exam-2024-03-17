@@ -34,6 +34,17 @@ public class ChatController {
         return "domain/chat/chat/room";
     }
 
+    @GetMapping("/{roomId}/rabbitMq")
+    public String showRoomByRabbitMq(
+            @PathVariable long roomId,
+            Model model
+    ) {
+        ChatRoom chatRoom = chatService.findRoomById(roomId).get();
+        model.addAttribute("chatRoom", chatRoom);
+
+        return "domain/chat/chat/roomByRabbitMq";
+    }
+
     @GetMapping("/{roomId}/messages")
     @ResponseBody
     public List<ChatMessage> showRoomMessages(
