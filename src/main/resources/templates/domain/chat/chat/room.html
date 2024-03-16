@@ -1,0 +1,64 @@
+<script th:inline="javascript">
+    const chatRoomId = /*[[${chatRoom.id}]]*/ 0;
+
+    async function loadChatMessages() {
+        try {
+            const response = await fetch(
+                '/chat/' + chatRoomId + '/messages',
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data);
+            }
+
+            drawChatMessages(data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    function drawChatMessages(messages) {
+        const chatMessages = document.getElementById('chat-messages');
+
+        messages.forEach(message => {
+            drawChatMessage(message);
+        });
+    }
+
+    function drawChatMessage(message) {
+        const chatMessages = document.getElementById('chat-messages');
+
+        const chatMessage = document.createElement('div');
+        chatMessage.classList.add('chat-message');
+
+        const chatMessageWriterName = document.createElement('div');
+        chatMessageWriterName.classList.add('chat-message-writer-name');
+        chatMessageWriterName.innerText = message.writerName;
+
+        const chatMessageBody = document.createElement('div');
+        chatMessageBody.classList.add('chat-message-body');
+        chatMessageBody.innerText = message.body;
+
+        chatMessage.appendChild(chatMessageWriterName);
+        chatMessage.appendChild(chatMessageBody);
+
+        chatMessages.appendChild(chatMessage);
+
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        loadChatMessages();
+    });
+</script>
+
+<div id="chat-messages">
+
+</div>
