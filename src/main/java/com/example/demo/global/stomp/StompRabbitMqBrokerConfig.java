@@ -1,14 +1,14 @@
 package com.example.demo.global.stomp;
 
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-@Profile("prod")
 @Configuration
 @EnableWebSocketMessageBroker
 public class StompRabbitMqBrokerConfig implements WebSocketMessageBrokerConfigurer {
@@ -21,13 +21,18 @@ public class StompRabbitMqBrokerConfig implements WebSocketMessageBrokerConfigur
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry
-                .setPathMatcher(new AntPathMatcher("."))
-                .enableStompBrokerRelay("/exchange")
+                .setApplicationDestinationPrefixes("/app")
+                .enableStompBrokerRelay("/topic")
                 .setRelayHost("localhost")
                 .setRelayPort(61613)
-                .setClientLogin("guest")
-                .setClientPasscode("guest")
-                .setSystemLogin("guest")
-                .setSystemPasscode("guest");
+                .setClientLogin("admin")
+                .setClientPasscode("admin")
+                .setSystemLogin("admin")
+                .setSystemPasscode("admin");
+    }
+
+    @Bean
+    public MessageConverter messageConverter() {
+        return new Jackson2JsonMessageConverter();
     }
 }

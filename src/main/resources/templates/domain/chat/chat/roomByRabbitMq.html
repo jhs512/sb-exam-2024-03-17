@@ -17,7 +17,7 @@
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
 
-        stompClient.subscribe(`/topic/chat/${chatRoomId}/messageCreated`, function (data) {
+        stompClient.subscribe(`/topic/chat${chatRoomId}MessageCreated`, function (data) {
             const jsonData = JSON.parse(data.body);
             drawChatMessage(jsonData);
         });
@@ -90,6 +90,12 @@
 
         stompClient.send(
             `/app/chat/${chatRoomId}/messages/create`,
+            {},
+            JSON.stringify({writerName, body})
+        );
+
+        stompClient.send(
+            `/topic/chat${chatRoomId}MessageCreated`,
             {},
             JSON.stringify({writerName, body})
         );
